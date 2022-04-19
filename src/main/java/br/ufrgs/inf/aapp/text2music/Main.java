@@ -1,11 +1,13 @@
 package br.ufrgs.inf.aapp.text2music;
 
+
 /**
  *
  */
+
 public class Main {
     public static void main(String args[]){
-        String partitura = "abc";
+        String partitura = "cde";
         
         Player p = new Player();
         Decoder d = new Decoder();
