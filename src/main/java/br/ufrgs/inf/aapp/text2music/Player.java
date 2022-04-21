@@ -63,7 +63,7 @@ public class Player {
 
     public void setBpm(float bpm) {
         System.out.println("Definindo o bpm como " + bpm);
-        this.bpm = bpm;
+        this.bpm = bpm >= 60 ? bpm : 60;
     }
 
     public int getOctave() {
