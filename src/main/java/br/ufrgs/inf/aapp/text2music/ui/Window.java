@@ -31,7 +31,7 @@ public class Window extends JFrame {
     private JButton loadButton = new JButton("Load");
     private JButton saveButton = new JButton("Save");
     
-    private Player p = new Player();
+    private Player player = new Player();
     
     public Window() {
         this.setSize(WIDTH, HEIGHT);
@@ -55,9 +55,10 @@ public class Window extends JFrame {
                 Decoder d = new Decoder();
                 MusicInstructionList l = d.decode(textArea.getText());
 
+                player.reset();
                 MusicInstruction i = l.getNextInstruction();
                 while (i != null){
-                    i.doInstruction(p);
+                    i.doInstruction(player);
                     i = l.getNextInstruction();
                 }
             }

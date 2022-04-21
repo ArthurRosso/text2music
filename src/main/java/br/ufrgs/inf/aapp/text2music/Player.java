@@ -7,16 +7,17 @@ import java.util.HashMap;
  *
  */
 public class Player {
-    private int bpm = 1;
-    private int octave = 5;
-    private int timbre = 1;
-    private int volume = 1;
+    private float bpm;
+    private int octave;
+    private int timbre;
+    private int volume;
     private Synthesizer midiSynth;
     private Instrument[] instr;
     private MidiChannel[] mChannels;
     private HashMap<Character, Integer> notes = new HashMap<Character, Integer>();
     
     public Player(){
+        this.reset();
         notes.put('a', 9);
         notes.put('b', 11);
         notes.put('c', 0);
@@ -31,30 +32,36 @@ public class Player {
             mChannels = midiSynth.getChannels();
             midiSynth.open();
 
-            midiSynth.loadInstrument(instr[0]);
+            midiSynth.loadInstrument(instr[this.timbre]);
             
         } catch( MidiUnavailableException e ) {
             System.out.println("Player MIDI exception");    
         }
+    }
     
+    public void reset() {
+        bpm = 60;
+        octave = 5;
+        volume = 1;
+        timbre = 0;
     }
     
     public void playNote(char note){
         int n = notes.get(note)+octave*12;
         mChannels[0].noteOn(n, 100); 
         try { 
-            Thread.sleep(1000/bpm);
-        } catch( InterruptedException e ) {
+            Thread.sleep(Math.round(1000/(bpm/60)));
+        } catch(InterruptedException e) {
             e.printStackTrace();
         }
         mChannels[0].noteOff(n);
     }
 
-    public int getBpm() {
+    public float getBpm() {
         return bpm;
     }
 
-    public void setBpm(int bpm) {
+    public void setBpm(float bpm) {
         System.out.println("Definindo o bpm como " + bpm);
         this.bpm = bpm;
     }
