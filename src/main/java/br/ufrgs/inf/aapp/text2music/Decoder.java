@@ -61,7 +61,7 @@ public class Decoder {
         }
     }
 
-    MusicInstructionList decode(String text) {
+    public MusicInstructionList decode(String text) {
         final String notes = "abcdefg";
         Random random = new Random();
         MusicInstructionList res = new MusicInstructionList();

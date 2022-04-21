@@ -7,10 +7,10 @@ import java.util.HashMap;
  *
  */
 public class Player {
-    private int bpm=1;
-    private int octave=1;
-    private int timbre=1;
-    private int volume=1;
+    private int bpm = 1;
+    private int octave = 5;
+    private int timbre = 1;
+    private int volume = 1;
     private Synthesizer midiSynth;
     private Instrument[] instr;
     private MidiChannel[] mChannels;
@@ -34,7 +34,6 @@ public class Player {
             midiSynth.loadInstrument(instr[0]);
             
         } catch( MidiUnavailableException e ) {
-//            e.printStackTrace();
             System.out.println("Player MIDI exception");    
         }
     

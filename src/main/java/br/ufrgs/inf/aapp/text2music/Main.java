@@ -1,24 +1,10 @@
 package br.ufrgs.inf.aapp.text2music;
 
-
-/**
- *
- */
+import br.ufrgs.inf.aapp.text2music.ui.Window;
 
 public class Main {
     public static void main(String args[]){
-        String partitura = "cde";
-        
-        Player p = new Player();
-        Decoder d = new Decoder();
-        MusicInstructionList l = d.decode(partitura);
-        
-        MusicInstruction i = l.getNextInstruction();
-        while (i != null){
-            i.doInstruction(p);
-            i = l.getNextInstruction();
-        }
-        
+        Window w = new Window();
+        w.display();
     }
-    
 }
