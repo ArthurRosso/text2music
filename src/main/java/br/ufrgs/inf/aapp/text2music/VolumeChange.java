@@ -1,9 +1,5 @@
 package br.ufrgs.inf.aapp.text2music;
 
-
-/**
- *
- */
 public class VolumeChange implements MusicInstruction {
     private boolean isIncrease;
     

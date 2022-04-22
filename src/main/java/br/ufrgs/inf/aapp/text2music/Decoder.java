@@ -1,11 +1,18 @@
 package br.ufrgs.inf.aapp.text2music;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
  */
 public class Decoder {
+    private static final int VERSION = 1;
+    
     /**
      * Representa uma string que pode ser "percorrida"
      */
@@ -120,4 +127,20 @@ public class Decoder {
         return res;
     }
 
+    public String OpenFile(String path) throws InvalidFileException, IOException {
+        String text = new String(Files.readAllBytes(Paths.get(path)));
+        
+        Pattern pattern = Pattern.compile("t2m(\\d+) ");
+        Matcher matcher = pattern.matcher(text);
+        if (matcher.find()) {
+            String match = matcher.group(0);
+            int version = Integer.parseInt(matcher.group(1));
+            
+            if (version <= VERSION) {
+                return matcher.replaceFirst("");
+            }
+        }
+        
+        throw new InvalidFileException();
+    }
 }

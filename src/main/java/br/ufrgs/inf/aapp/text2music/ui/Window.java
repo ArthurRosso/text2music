@@ -12,9 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 /**
@@ -28,10 +32,14 @@ public class Window extends JFrame {
     
     private JTextArea textArea = new JTextArea();
     private JButton playButton = new JButton("Play");
+    private JFileChooser fileChooser = new JFileChooser();
     private JButton loadButton = new JButton("Load");
     private JButton saveButton = new JButton("Save");
     
+    private Decoder decoder = new Decoder();
     private Player player = new Player();
+    
+    private boolean isPlaying = false;
     
     public Window() {
         this.setSize(WIDTH, HEIGHT);
@@ -49,18 +57,36 @@ public class Window extends JFrame {
         textArea.setBounds(WIDTH/2, 0, WIDTH/2, HEIGHT - BT_HEIGHT);
         textArea.setLineWrap(true);
         
-        playButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Decoder d = new Decoder();
-                MusicInstructionList l = d.decode(textArea.getText());
+        playButton.addActionListener((ActionEvent ae) -> {
+            new Thread(() -> {
+                if (this.isPlaying) {
+                    this.isPlaying = false;
+                } else {
+                    playButton.setText("Stop");
+                    this.isPlaying = true;
+                    MusicInstructionList l = decoder.decode(textArea.getText());
 
-                player.reset();
-                MusicInstruction i = l.getNextInstruction();
-                while (i != null){
-                    i.doInstruction(player);
-                    i = l.getNextInstruction();
+                    player.reset();
+                    MusicInstruction i = l.getNextInstruction();
+                    while (i != null && isPlaying) {
+                        i.doInstruction(player);
+                        i = l.getNextInstruction();
+                    }
+                    playButton.setText("Play");
+                    this.isPlaying = false;
                 }
+            }).start();
+            
+        });
+        
+        loadButton.addActionListener((ActionEvent ae) -> {
+            try {
+                if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    String text = decoder.OpenFile(fileChooser.getSelectedFile().getAbsolutePath());
+                    textArea.setText(text);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "error: " + e.getMessage());
             }
         });
         
