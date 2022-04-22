@@ -82,7 +82,7 @@ public class Decoder {
                 res.add(new OctaveChange(false));
                 
             } else if (str.compareAdvance(" ")) {
-                // TODO: Adicionar instrução de silêncio
+                res.add(new SilentNoteInstruction());
             } else if (str.compareAdvance("\n")) {
                 res.add(new TimbreChange());
                 
@@ -103,11 +103,11 @@ public class Decoder {
 
             } else if("iou".contains(str.getCurr().toLowerCase())) {
                 String nota = str.getPrev().toLowerCase();
-                          
+
                 if (notes.contains(nota)) {
                     res.add(new Note(nota.charAt(0)));
                 } else {
-                    // TODO: Adicionar instrução de silêncio
+                    res.add(new SilentNoteInstruction());
                 }
                 str.skip();
 

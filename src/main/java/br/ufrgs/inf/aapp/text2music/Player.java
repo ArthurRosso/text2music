@@ -7,6 +7,8 @@ import java.util.HashMap;
  *
  */
 public class Player {
+    public static final int INITIAL_VOLUME = 100;
+    
     private float bpm;
     private int octave;
     private int timbre;
@@ -42,19 +44,27 @@ public class Player {
     public void reset() {
         bpm = 60;
         octave = 5;
-        volume = 1;
+        volume = INITIAL_VOLUME;
         timbre = 0;
     }
     
     public void playNote(char note){
         int n = notes.get(note)+octave*12;
-        mChannels[0].noteOn(n, 100); 
+        mChannels[0].noteOn(n, volume); 
         try { 
             Thread.sleep(Math.round(1000/(bpm/60)));
         } catch(InterruptedException e) {
             e.printStackTrace();
         }
         mChannels[0].noteOff(n);
+    }
+    
+    public void playSilence() {
+        try { 
+            Thread.sleep(Math.round(1000/(bpm/60)));
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public float getBpm() {

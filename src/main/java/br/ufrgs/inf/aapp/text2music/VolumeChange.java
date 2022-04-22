@@ -15,7 +15,7 @@ public class VolumeChange implements MusicInstruction {
         if (this.isIncrease) {
             p.setVolume(p.getVolume() * 2);
         } else {
-            p.setVolume(p.getVolume() / 2);
+            p.setVolume(p.INITIAL_VOLUME);
         }
     }
 }
