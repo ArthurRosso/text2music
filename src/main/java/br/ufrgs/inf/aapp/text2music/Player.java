@@ -10,6 +10,7 @@ import java.util.HashMap;
  */
 public class Player {
     public static final int INITIAL_VOLUME = 100;
+    public static final int INITIAL_OCTAVE = 5;
     
     private float bpm;
     private byte timbre;
@@ -42,13 +43,13 @@ public class Player {
     
     public void reset() {
         bpm = 60;
-        octave = 5;
+        octave = INITIAL_OCTAVE;
         volume = INITIAL_VOLUME;
         setTimbre((byte)0);
     }
     
-    public void playNote(char note){
-        int n = notes.get(note)+octave*12;
+    public void playNote(char note, NoteStyle style) {
+        int n = notes.get(note) + octave*12 + pitch(style);
         mChannels[0].noteOn(n, volume); 
         try { 
             Thread.sleep(Math.round(1000/(bpm/60)));
@@ -56,6 +57,16 @@ public class Player {
             e.printStackTrace();
         }
         mChannels[0].noteOff(n);
+    }
+    
+    private int pitch(NoteStyle style) {
+        if (style == NoteStyle.Flat) {
+            return -1;
+        }
+        if (style == NoteStyle.Sharp) {
+            return 1;
+        }
+        return 0;
     }
     
     public void playSilence() {

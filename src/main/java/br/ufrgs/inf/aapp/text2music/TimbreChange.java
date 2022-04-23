@@ -6,10 +6,20 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
 public class TimbreChange implements MusicInstruction {
-    private Random rand = new Random();
+    private final int increase;
+    private final boolean absolute;
+    
+    public TimbreChange(int increase, boolean absolute) {
+        this.increase = increase;
+        this.absolute = absolute;
+    }
     
     public void doInstruction(Player p) {
-        p.setTimbre((byte)(rand.nextInt(0, 128))); // MIDI supports 129 instruments
+        if (this.absolute) {
+            p.setTimbre((byte)this.increase);
+        } else {
+            p.setTimbre((byte)(p.getTimbre() + increase));
+        }
     }
 
     @Override

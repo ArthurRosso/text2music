@@ -7,17 +7,17 @@ import javax.sound.midi.Track;
  *
  */
 public class OctaveChange implements MusicInstruction {
-    boolean isIncrease;
+    private int increase;
 
-    public OctaveChange(boolean isIncrease) {
-        this.isIncrease = isIncrease;
+    public OctaveChange(int increase) {
+        this.increase = increase;
     }
     
     public void doInstruction(Player p){
-        if (this.isIncrease) {
-            p.setOctave(p.getOctave() + 1);
+        if (this.increase == 0) {
+            p.setOctave(p.INITIAL_OCTAVE);
         } else {
-            p.setOctave(p.getOctave() - 1);
+            p.setOctave(p.getOctave() + this.increase);
         }
     }
 

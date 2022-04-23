@@ -3,13 +3,16 @@ package br.ufrgs.inf.aapp.text2music;
 import javax.sound.midi.Track;
 
 public class Note implements MusicInstruction {
-    char note;
+    private final NoteStyle style;
+    private final char note;
 
-    public Note(char note) {
+    public Note(char note, NoteStyle style) {
         this.note = note;
+        this.style = style;
     }
-    public void doInstruction(Player p){
-        p.playNote(this.note);
+    
+    public void doInstruction(Player p) {
+        p.playNote(this.note, style);
     }
 
     @Override

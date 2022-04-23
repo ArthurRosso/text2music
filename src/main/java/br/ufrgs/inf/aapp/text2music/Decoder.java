@@ -48,7 +48,10 @@ public class Decoder {
          * Retorna o caractere atual
          */
         public String getCurr() {
-            return str.charAt(this.index) + "";
+            if (this.index < str.length()) {
+                return str.charAt(this.index) + "";
+            }
+            return "\0";
         }
 
         /**
@@ -70,7 +73,12 @@ public class Decoder {
     }
 
     public MusicInstructionList decode(String text) {
-        final String notes = "abcdefg";
+        final String notes = "ABCDEFG";
+        final String flat = "HIJKLM";
+        final String normal = "NOPQRS";
+        final String sharp = "TUVWXYZ";
+        final String digits = "0123456789";
+        
         Random random = new Random();
         MusicInstructionList res = new MusicInstructionList();
         SpecialString str = new SpecialString(text);
@@ -83,44 +91,58 @@ public class Decoder {
             } else if (str.compareAdvance("BPM-")) {
                 res.add(new BPMChange(-50));
                 
-            } else if (str.compareAdvance("T+")) {
-                res.add(new OctaveChange(true));
+            } else if (str.compareAdvance("!")) {
+                res.add(new OctaveChange(1));
                 
-            } else if (str.compareAdvance("T-")) {
-                res.add(new OctaveChange(false));
-                
-            } else if (str.compareAdvance(" ")) {
-                res.add(new SilentNoteInstruction());
-            } else if (str.compareAdvance("\n")) {
-                res.add(new TimbreChange());
-                
+            } else if (str.compareAdvance("?")) {
+                res.add(new OctaveChange(-1));
+            } else if (str.compareAdvance(".")) {
+                res.add(new OctaveChange(0));
             } else if (str.compareAdvance("+")) {
                 res.add(new VolumeChange(true));
-                
             } else if (str.compareAdvance("-")) {
                 res.add(new VolumeChange(false));
                 
             } else if (str.compareAdvance("?") || str.compareAdvance(".")) {
                 int randomIndex = random.nextInt(notes.length());
-                char note = notes.charAt(randomIndex);
-                res.add(new Note(note));
-                
-            } else if (notes.contains(str.getCurr().toLowerCase())) {
-                res.add(new Note(str.getCurr().toLowerCase().charAt(0)));
+                char note = notes.toLowerCase().charAt(randomIndex);
+                res.add(new Note(note, NoteStyle.Normal));
+            } else if (str.compareAdvance(";")) {
+                res.add(new TimbreChange(76, true));
+            } else if (str.compareAdvance(",")) {
+                res.add(new TimbreChange(20, true));
+            } else if (str.compareAdvance(" ")) {
+                res.add(new TimbreChange(1, true));
+            } else if (str.compareAdvance("\n")) {
+                res.add(new TimbreChange(15, true));
+            } else if (notes.contains(str.getCurr())) {
+                char note = str.getCurr().toLowerCase().charAt(0);
+                NoteStyle style = NoteStyle.Normal;
                 str.skip();
+                
+                String next = str.getCurr().toUpperCase();
+                if (flat.contains(next)) {
+                    style = NoteStyle.Flat;
+                    str.skip();
+                } else if (normal.contains(next)) {
+                    style = NoteStyle.Normal;
+                    str.skip();
+                } else if (sharp.contains(next)) {
+                    style = NoteStyle.Sharp;
+                    str.skip();
+                }
 
-            } else if("iou".contains(str.getCurr().toLowerCase())) {
-                String nota = str.getPrev().toLowerCase();
-
-                if (notes.contains(nota)) {
-                    res.add(new Note(nota.charAt(0)));
+                res.add(new Note(note, style));
+            } else if (digits.contains(str.getCurr())) {
+                int digit = digits.indexOf(str.getCurr());
+                res.add(new TimbreChange(digit, digit == 0));
+                str.skip();
+            } else {
+                if (notes.contains(str.getPrev())) {
+                    res.add(new Note(str.getPrev().toLowerCase().charAt(0), NoteStyle.Normal));
                 } else {
                     res.add(new SilentNoteInstruction());
                 }
-                str.skip();
-
-            } else {
-                // Pular caractere inválido
                 str.skip();
             }
         }
