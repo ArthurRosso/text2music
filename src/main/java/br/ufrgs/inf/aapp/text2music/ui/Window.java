@@ -90,6 +90,20 @@ public class Window extends JFrame {
             }
         });
         
+        saveButton.addActionListener((ActionEvent ae) -> {
+            try {
+                if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    decoder.SaveFile(
+                            fileChooser.getSelectedFile().getAbsolutePath(),
+                            textArea.getText()
+                    );
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "error: " + e.getMessage());
+            }
+        });
+        
+        
         this.add(playButton);
         this.add(saveButton);
         this.add(loadButton);

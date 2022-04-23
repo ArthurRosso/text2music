@@ -1,5 +1,6 @@
 package br.ufrgs.inf.aapp.text2music;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -133,7 +134,6 @@ public class Decoder {
         Pattern pattern = Pattern.compile("t2m(\\d+) ");
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
-            String match = matcher.group(0);
             int version = Integer.parseInt(matcher.group(1));
             
             if (version <= VERSION) {
@@ -142,5 +142,11 @@ public class Decoder {
         }
         
         throw new InvalidFileException();
+    }
+    
+    public void SaveFile(String path, String music) throws IOException {
+        FileWriter f = new FileWriter(path);
+        f.write("t2m" + VERSION + " " + music);
+        f.close();
     }
 }
