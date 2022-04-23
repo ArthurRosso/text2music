@@ -2,10 +2,6 @@ package br.ufrgs.inf.aapp.text2music;
 
 import javax.sound.midi.Track;
 
-
-/**
- *
- */
 public class Note implements MusicInstruction {
     char note;
 

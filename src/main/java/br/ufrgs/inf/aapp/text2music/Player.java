@@ -1,10 +1,8 @@
 package br.ufrgs.inf.aapp.text2music;
 
-import com.sun.media.sound.StandardMidiFileWriter;
 import java.io.File;
 import java.io.IOException;
 import javax.sound.midi.*;
-import javax.sound.midi.spi.MidiFileWriter;
 import java.util.HashMap;
 
 /**
@@ -14,8 +12,8 @@ public class Player {
     public static final int INITIAL_VOLUME = 100;
     
     private float bpm;
+    private byte timbre;
     private int octave;
-    private int timbre;
     private int volume;
     private Synthesizer midiSynth;
     private Instrument[] instr;
@@ -23,7 +21,6 @@ public class Player {
     private HashMap<Character, Integer> notes = new HashMap<Character, Integer>();
     
     public Player(){
-        this.reset();
         notes.put('a', 9);
         notes.put('b', 11);
         notes.put('c', 0);
@@ -37,9 +34,7 @@ public class Player {
             instr = midiSynth.getDefaultSoundbank().getInstruments();
             mChannels = midiSynth.getChannels();
             midiSynth.open();
-
-            midiSynth.loadInstrument(instr[this.timbre]);
-            
+            this.reset();
         } catch( MidiUnavailableException e ) {
             System.out.println("Player MIDI exception");    
         }
@@ -49,7 +44,7 @@ public class Player {
         bpm = 60;
         octave = 5;
         volume = INITIAL_VOLUME;
-        timbre = 0;
+        setTimbre((byte)0);
     }
     
     public void playNote(char note){
@@ -114,13 +109,14 @@ public class Player {
         this.octave = octave;
     }
 
-    public int getTimbre() {
+    public byte getTimbre() {
         return timbre;
     }
 
-    public void setTimbre(int timbre) {
+    public void setTimbre(byte timbre) {
         System.out.println("Definindo o timbre como " + timbre);
         this.timbre = timbre;
+        mChannels[0].programChange(this.timbre);
     }
 
     public int getVolume() {
