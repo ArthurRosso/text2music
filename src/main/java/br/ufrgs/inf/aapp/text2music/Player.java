@@ -1,6 +1,10 @@
 package br.ufrgs.inf.aapp.text2music;
 
+import com.sun.media.sound.StandardMidiFileWriter;
+import java.io.File;
+import java.io.IOException;
 import javax.sound.midi.*;
+import javax.sound.midi.spi.MidiFileWriter;
 import java.util.HashMap;
 
 /**
@@ -67,6 +71,31 @@ public class Player {
         }
     }
 
+    public void export(String path, MusicInstructionList l) throws MidiUnavailableException, InvalidMidiDataException, IOException {
+        this.reset();
+        
+        Sequence seq = new Sequence(Sequence.PPQ, 4);
+        
+        Track t = seq.createTrack();
+        new BPMChange(0).record(this, 0, t); // Initialize BPM
+        
+        MusicInstruction i = l.getNextInstruction();
+        long tick = 0;
+        while (i != null) {
+            tick = i.record(this, tick, t);
+            i = l.getNextInstruction();
+        }
+        
+        File out = new File(path);
+        MidiSystem.write(seq, MidiSystem.getMidiFileTypes(seq)[0], out);
+    }
+    
+    public void recordNote(long tick, Track t, char note) throws InvalidMidiDataException {
+        int n = notes.get(note)+octave*12;
+        t.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, n, volume), tick));
+        t.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, n, volume), tick+4));
+    }
+    
     public float getBpm() {
         return bpm;
     }

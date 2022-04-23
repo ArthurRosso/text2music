@@ -35,6 +35,7 @@ public class Window extends JFrame {
     private JFileChooser fileChooser = new JFileChooser();
     private JButton loadButton = new JButton("Load");
     private JButton saveButton = new JButton("Save");
+    private JButton expoButton = new JButton("Export");
     
     private Decoder decoder = new Decoder();
     private Player player = new Player();
@@ -53,6 +54,7 @@ public class Window extends JFrame {
         playButton.setBounds(0, HEIGHT - BT_HEIGHT, WIDTH, BT_HEIGHT);
         loadButton.setBounds(0, 0, WIDTH/2, BT_HEIGHT);
         saveButton.setBounds(0, BT_HEIGHT, WIDTH/2, BT_HEIGHT);
+        expoButton.setBounds(0, BT_HEIGHT*2, WIDTH/2, BT_HEIGHT);
         
         textArea.setBounds(WIDTH/2, 0, WIDTH/2, HEIGHT - BT_HEIGHT);
         textArea.setLineWrap(true);
@@ -103,10 +105,21 @@ public class Window extends JFrame {
             }
         });
         
+        expoButton.addActionListener((ActionEvent ae) -> {
+            try {
+                if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    MusicInstructionList l = decoder.decode(textArea.getText());
+                    player.export(fileChooser.getSelectedFile().getAbsolutePath(), l);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         
         this.add(playButton);
         this.add(saveButton);
         this.add(loadButton);
+        this.add(expoButton);
         this.add(textArea);
     }
     

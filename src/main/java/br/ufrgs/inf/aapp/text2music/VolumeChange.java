@@ -1,5 +1,8 @@
 package br.ufrgs.inf.aapp.text2music;
 
+import javax.sound.midi.Sequencer;
+import javax.sound.midi.Track;
+
 public class VolumeChange implements MusicInstruction {
     private boolean isIncrease;
     
@@ -13,5 +16,11 @@ public class VolumeChange implements MusicInstruction {
         } else {
             p.setVolume(p.INITIAL_VOLUME);
         }
+    }
+
+    @Override
+    public long record(Player p, long tick, Track t) {
+        this.doInstruction(p);
+        return tick;
     }
 }

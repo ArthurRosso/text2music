@@ -78,10 +78,10 @@ public class Decoder {
         while (str.length() > 0) {
             
             if (str.compareAdvance("BPM+")){
-                res.add(new BPMChange(true));
+                res.add(new BPMChange(50));
                 
             } else if (str.compareAdvance("BPM-")) {
-                res.add(new BPMChange(false));
+                res.add(new BPMChange(-50));
                 
             } else if (str.compareAdvance("T+")) {
                 res.add(new OctaveChange(true));
