@@ -41,8 +41,7 @@ for msg in midi:
       elif msg.is_cc() or msg.type == 'program_change':
         pass
       else:
-        print(f'Unknown message {msg.type}!')
-        exit(1)
+        print(f'warn: Unknown message {msg.type}!')
 
 # Add duration information on notes and remove chords
 music = []
